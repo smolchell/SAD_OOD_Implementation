@@ -121,8 +121,27 @@ def order():
         columns = [column[0] for column in cursor.description]
         data = [dict(zip(columns, row)) for row in cursor.fetchall()]
         json_format = json.dumps(data, indent=4)
+        return json_format
     ##end if
 
+    cursor.close()
+return jsonify({"message": mssg})
+
+@app.route("/addProduct", methods=["POST"])
+def addProduct():
+    msg = ''
+    dbconn = cnntDB()
+    cursor = dbconn.cursor()
+    name = 
+    price = 
+    description =
+    quantity =
+    imageURL =
+    
+    cursor.execute('INSERT INTO orders INVENTORY \
+    (NULL, %s, %s, %s, %s, %s)', (name, price, description, quantity, imageURL))
+    dbconn.commit()
+    
     cursor.close()
 return jsonify({"message": mssg})
 
