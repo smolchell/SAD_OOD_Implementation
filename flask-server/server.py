@@ -1,5 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect, url_for, session, render_template
 from flask_cors import CORS
+import re
+import pymysql
 
 app = Flask(__name__)
 CORS(app)
@@ -9,32 +11,71 @@ users = {}
 
 @app.route("/register", methods=["POST"])
 def register():
+    msg = ''
+    code = ''
     data = request.get_json()
     email = data.get("email")
     
-    if email in users:
-        return jsonify({"message": "User already exists"}), 400
-
-    users[email] = {
-        "first_name": data.get("first_name"),
-        "last_name": data.get("last_name"),
-        "dob": data.get("dob"),
-        "password": data.get("password")
-    }
-
-    return jsonify({"message": "Registration successful"}), 200
+    dbconn = cnntDB()
+    cursor = dbconn.cursor()
+    cursor.execute('SELECT * FROM AWE_staff WHERE email = % s \
+        AND password = % s', (email, password, ))
+    emailSearch = cursor.fetchone()
+    
+    if emailSearch:
+        msg = "User already exists"
+        code = 400
+    else:
+        fname = data.get("first_name")
+        lname = data.get("last_name")
+        dob = data.get("dob")
+        password = data.get("password")
+        cursor.execute('INSERT INTO customers VALUES \
+        (NULL, %s, %s, %s, %s, %s)', (fname, lname, email, password, dob))
+        dbconn.commit()
+        msg = Registration successful
+        code = 200
+    
+    cursor.close()
+    return jsonify({"message": mssg}), code
 
 @app.route("/login", methods=["POST"])
 def login():
+    msg = ''
+    code = ''
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
-
-    user = users.get(email)
-    if user and user["password"] == password:
-        return jsonify({"message": "Login successful"}), 200
-
-    return jsonify({"message": "Invalid credentials"}), 401
+    
+    if email != "" and password != "":
+        dbconn = cnntDB()
+        cursor = dbconn.cursor()
+        cursor.execute('SELECT * FROM AWE_staff WHERE email = % s \
+            AND password = % s', (email, password, ))
+        account = cursor.fetchone()
+        if account:
+            session['loggedin'] = True
+            session['id'] = account['id']
+            session['username'] = account['email']
+            session['access'] = 'customer'
+            msg = 'Logged in successfully !'
+            code = 200
+        else:
+            cursor.execute('SELECT * FROM customers WHERE email = % s \
+            AND password = % s', (email, password, ))
+            account = cursor.fetchone()
+            if account:
+                session['loggedin'] = True
+                session['id'] = account['id']
+                session['username'] = account['email']
+                session['access'] = 'staff'
+                msg = 'Logged in successfully !'
+                code = 200
+            else:
+                msg = 'Incorrect email / password !'
+                code = 400
+        cursor.close()
+    return  jsonify({"message": mssg}), code
 
 @app.route("/")
 def home():
