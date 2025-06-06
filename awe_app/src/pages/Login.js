@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-function Login( {data} ) {
+function Login({ setLoggedInUser }) {
   const [form, setForm] = useState({ email: '', password: '' });
   const [msg, setMsg] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -11,19 +13,52 @@ function Login( {data} ) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     axios.post('http://localhost:5000/login', form)
-      .then(res => setMsg(res.data.message))
-      .catch(err => setMsg(err.response?.data?.message || 'Something went wrong'));
+      .then(res => {
+        if (res.data.user) {
+          setMsg('Login successful!');
+          setLoggedInUser(res.data.user); // Pass user info to App
+          navigate('/'); // Redirect to home
+        } else {
+          setMsg('User not found. Redirecting to registration...');
+          setTimeout(() => {
+            navigate('/register');
+          }, 2000);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        setMsg(err.response?.data?.message || 'Login failed');
+      });
   };
 
   return (
     <div>
       <h2>Login</h2>
+
       <form onSubmit={handleSubmit}>
-        <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
-        <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          required
+        /><br /><br />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
+          required
+        /><br /><br />
+
         <button type="submit">Login</button>
       </form>
+
       <p>{msg}</p>
     </div>
   );

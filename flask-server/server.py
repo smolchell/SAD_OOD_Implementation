@@ -8,34 +8,39 @@ CORS(app)
 users = {}
 orders = []
 
-@app.route("/register", methods=["POST"])
+@app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
     email = data.get("email")
-    
+    password = data.get("password")
+
     if email in users:
         return jsonify({"message": "User already exists"}), 400
 
     users[email] = {
-        "first_name": data.get("first_name"),
-        "last_name": data.get("last_name"),
-        "dob": data.get("dob"),
-        "password": data.get("password")
+        "email": email,
+        "password": password,
+        "name": data.get("name", "User")
     }
+    return jsonify({"message": "Registration successful!", "user": users[email]}), 200
 
-    return jsonify({"message": "Registration successful"}), 200
 
-@app.route("/login", methods=["POST"])
+@app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     email = data.get("email")
     password = data.get("password")
 
     user = users.get(email)
-    if user and user["password"] == password:
-        return jsonify({"message": "Login successful"}), 200
+    if not user:
+        return jsonify({"message": "User not found"}), 404
 
-    return jsonify({"message": "Invalid credentials"}), 401
+    if user["password"] != password:
+        return jsonify({"message": "Incorrect password"}), 401
+
+    return jsonify({"message": "Login successful!", "user": user}), 200
+
+
 
 @app.route("/")
 def home():
