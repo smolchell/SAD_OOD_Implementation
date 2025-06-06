@@ -6,6 +6,7 @@ CORS(app)
 
 # In-memory user database
 users = {}
+orders = []
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -59,6 +60,20 @@ def products():
             "picture_url" : "https://www.lg.com/content/dam/channel/wcms/au/images/tvs/50ut8050psb_aau_ehap_au_c/gallery/UT80_65_%2055_%2050__RIGHT-1600.jpg/_jcr_content/renditions/thum-1600x1062.jpeg"
         }
     ]
+
+
+@app.route("/orders", methods=["POST"])
+def place_order():
+    order = request.get_json()
+    orders.append(data)
+    return jsonify({"message": "Order received", "orderId": len(orders)}), 201
+
+
+@app.route("/orders", methods=["GET"])
+def get_orders():
+    return jsonify(orders)
+
+
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
