@@ -101,5 +101,30 @@ def products():
     cursor.close()
 return json_format
 
+@app.route("/order", methods=["GET", "POST"])
+def order():
+    msg = ''
+    dbconn = cnntDB()
+    cursor = dbconn.cursor()
+    customerID = session.get('id')
+    itemsOrdered = 
+    shipping =
+    paymentOpt =
+    total =
+    
+    if request.method == 'POST':
+        cursor.execute('INSERT INTO orders VALUES \
+        (NULL, %s, %s, %s, %s, %s)', (customerID, itemsOrdered, shipping, paymentOpt, total))
+        dbconn.commit()
+    else if request.method == 'GET':
+        cursor.execute('SELECT * FROM orders WHERE customerID = %s', customerID)
+        columns = [column[0] for column in cursor.description]
+        data = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        json_format = json.dumps(data, indent=4)
+    ##end if
+
+    cursor.close()
+return jsonify({"message": mssg})
+
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
