@@ -33,7 +33,7 @@ def register():
         cursor.execute('INSERT INTO customers VALUES \
         (NULL, %s, %s, %s, %s, %s)', (fname, lname, email, password, dob))
         dbconn.commit()
-        msg = Registration successful
+        msg = 'Registration successful'
         code = 200
     
     cursor.close()
@@ -77,6 +77,15 @@ def login():
         cursor.close()
     return  jsonify({"message": mssg}), code
 
+@app.route('/logout')
+def logout():
+    session.pop('loggedin', None)
+    session.pop('id', None)
+    session.pop('username', None)
+    session.pop('access', None)
+
+    return redirect(url_for('index'))
+
 @app.route("/")
 def home():
     return jsonify({"message": "Welcome to the Home Page!"})
@@ -92,7 +101,7 @@ def home():
 @app.route("/products", methods=["GET"])
 def products():
     json_format = jsonify({"message": 'login to view products'})
-    
+
     if 'loggedin' in  session:
         dbconn = cnntDB()
         cursor = dbconn.cursor()
@@ -107,45 +116,45 @@ def products():
 @app.route("/order", methods=["GET", "POST"])
 def order():
     msg = ''
-    
+
     if 'loggedin' in  session:
         if 'customer' in  session['access']:
             dbconn = cnntDB()
             cursor = dbconn.cursor()
             customerID = session.get('id')
-            itemsOrdered = 
-            shipping =
-            paymentOpt =
-            total =
+            itemsOrdered = ''
+            shipping = ''
+            paymentOpt = ''
+            total = ''
             
             if request.method == 'POST':
                 cursor.execute('INSERT INTO orders VALUES \
                 (NULL, %s, %s, %s, %s, %s)', (customerID, itemsOrdered, shipping, paymentOpt, total))
                 dbconn.commit()
-            else if request.method == 'GET':
+            elif request.method == 'GET':
                 cursor.execute('SELECT * FROM orders WHERE customerID = %s', customerID)
                 columns = [column[0] for column in cursor.description]
                 data = [dict(zip(columns, row)) for row in cursor.fetchall()]
                 json_format = json.dumps(data, indent=4)
                 return json_format
             ##end if
-    
+
             cursor.close()
     return jsonify({"message": mssg})
 
 @app.route("/addProduct", methods=["POST"])
 def addProduct():
     msg = ''
-    
+
     if 'loggedin' in  session:
         if 'staff' in  session['access']:
             dbconn = cnntDB()
             cursor = dbconn.cursor()
-            name = 
-            price = 
-            description =
-            quantity =
-            imageURL =
+            name = ''
+            price = ''
+            description = ''
+            quantity = ''
+            imageURL = ''
             
             cursor.execute('INSERT INTO inventory \
             (NULL, %s, %s, %s, %s, %s)', (name, price, description, quantity, imageURL))
@@ -158,17 +167,17 @@ def addProduct():
 @app.route("/updateProduct", methods=["POST"])
 def updateProduct():
     msg = ''
-    
+
     if 'loggedin' in  session:
         if 'staff' in  session['access']:
             dbconn = cnntDB()
             cursor = dbconn.cursor()
-            productID = 
-            name = 
-            price = 
-            description =
-            quantity =
-            imageURL =
+            productID = ''
+            name = ''
+            price = ''
+            description = ''
+            quantity = ''
+            imageURL = ''
             
             cursor.execute('UPDATE inventory \
             SET name = %s, price = %s, description = %s, quantity = %s, imageURL = %s \
@@ -183,12 +192,12 @@ def updateProduct():
 @app.route("/deleteProduct", methods=["POST"])
 def deleteProduct():
     msg = ''
-    
+
     if 'loggedin' in  session:
         if 'staff' in  session['access']:
             dbconn = cnntDB()
             cursor = dbconn.cursor()
-            productID = 
+            productID = ''
             
             cursor.execute('DELETE FROM inventory \
             WHERE id = %d', productID)
