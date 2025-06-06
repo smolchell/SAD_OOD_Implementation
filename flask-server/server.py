@@ -147,7 +147,7 @@ if 'loggedin' in  session:
         quantity =
         imageURL =
         
-        cursor.execute('INSERT INTO INVENTORY \
+        cursor.execute('INSERT INTO inventory \
         (NULL, %s, %s, %s, %s, %s)', (name, price, description, quantity, imageURL))
         dbconn.commit()
         
@@ -170,12 +170,31 @@ if 'loggedin' in  session:
         quantity =
         imageURL =
         
-        cursor.execute('UPDATE INVENTORY \
+        cursor.execute('UPDATE inventory \
         SET name = %s, price = %s, description = %s, quantity = %s, imageURL = %s \
         WHERE id = %d', (name, price, description, quantity, imageURL, productID))
         dbconn.commit()
         
         mssg = f'update to product {productID} successful'
+        
+        cursor.close()
+return jsonify({"message": mssg})
+
+@app.route("/deleteProduct", methods=["POST"])
+def deleteProduct():
+msg = ''
+
+if 'loggedin' in  session:
+    if 'staff' in  session['access']:
+        dbconn = cnntDB()
+        cursor = dbconn.cursor()
+        productID = 
+        
+        cursor.execute('DELETE FROM inventory \
+        WHERE id = %d', productID)
+        dbconn.commit()
+        
+        mssg = f'deletion of product {productID} successful'
         
         cursor.close()
 return jsonify({"message": mssg})
