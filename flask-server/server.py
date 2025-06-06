@@ -91,15 +91,15 @@ def home():
 
 @app.route("/products", methods=["GET"])
 def products():
-    return [
-        {   
-            "id" : 1,
-            "name" : "LG Smart TV",
-            "price" : 299.99,
-            "description" : "55 Inch, HDR colours, HDPI resolution",
-            "picture_url" : "https://www.lg.com/content/dam/channel/wcms/au/images/tvs/50ut8050psb_aau_ehap_au_c/gallery/UT80_65_%2055_%2050__RIGHT-1600.jpg/_jcr_content/renditions/thum-1600x1062.jpeg"
-        }
-    ]
+    dbconn = cnntDB()
+    cursor = dbconn.cursor()
+    cursor.execute('SELECT * FROM inventory')
+    
+    columns = [column[0] for column in cursor.description]
+    data = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    json_format = json.dumps(data, indent=4)
+    cursor.close()
+return json_format
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
