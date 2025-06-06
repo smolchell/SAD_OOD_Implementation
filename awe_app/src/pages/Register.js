@@ -1,18 +1,22 @@
-import React, { useState } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react';
+import axios from 'axios';
 
-function Register( {data} ) {
+function Register({ data }) {
   const [form, setForm] = useState({
     first_name: '',
     last_name: '',
     dob: '',
     email: '',
-    password: ''
+    password: '',
+    role: 'user' // Default role
   });
+
   const [msg, setMsg] = useState('');
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    setForm({ ...form, [name]: value });
   };
 
   const handleSubmit = (e) => {
@@ -25,7 +29,7 @@ function Register( {data} ) {
   return (
     <div>
       <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={{border:"1px solid gray", width:"50%", padding:"10px"}}>
         <input type="text" name="first_name" placeholder="First Name" onChange={handleChange} required />
         <input type="text" name="last_name" placeholder="Last Name" onChange={handleChange} required />
         <input type="date" name="dob" onChange={handleChange} required />

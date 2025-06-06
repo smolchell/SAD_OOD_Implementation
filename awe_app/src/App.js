@@ -1,5 +1,6 @@
+import './App.css';
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import Catalog from './pages/Catalog';
 import MyCart from './pages/MyCart';
 import Login from './pages/Login';
@@ -7,6 +8,7 @@ import Register from './pages/Register';
 import OrderHistory from './pages/OrderHistory';
 
 function App() {
+
   const [shoppingCart, setShoppingCart] = useState([]);
   const [orderHistory, setOrderHistory] = useState([]);
   const [loggedInUser, setLoggedInUser] = useState(
@@ -38,7 +40,9 @@ function App() {
 
           {loggedInUser ? (
             <>
-              <span style={{ marginLeft: '20px', marginRight: '10px' }}>👤 {loggedInUser.name}</span>
+              <span style={{ marginLeft: '20px', marginRight: '10px' }}>
+                👤 {loggedInUser.first_name} {loggedInUser.last_name} ({loggedInUser.role})
+              </span>
               <button onClick={handleLogout}>Logout</button>
             </>
           ) : (
@@ -52,7 +56,13 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={<Catalog shoppingCart={shoppingCart} setShoppingCart={setShoppingCart} />}
+            element={
+              <Catalog
+                shoppingCart={shoppingCart}
+                setShoppingCart={setShoppingCart}
+                loggedInUser={loggedInUser}
+              />
+            }
           />
 
           <Route
@@ -98,4 +108,4 @@ function App() {
   );
 }
 
-export default App;
+export default App

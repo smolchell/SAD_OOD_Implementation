@@ -16,10 +16,20 @@ function Login({ setLoggedInUser }) {
 
     axios.post('http://localhost:5000/login', form)
       .then(res => {
-        if (res.data.user) {
+        const user = res.data.user;
+
+        if (user) {
+          console.log("ASDF");
+          console.log(user);
           setMsg('Login successful!');
-          setLoggedInUser(res.data.user); // Pass user info to App
-          navigate('/'); // Redirect to home
+          setLoggedInUser(user); // Pass user info to parent
+
+          // Redirect based on role
+          if (user.role === 'admin') {
+            navigate('/');
+          } else {
+            navigate('/');
+          }
         } else {
           setMsg('User not found. Redirecting to registration...');
           setTimeout(() => {
