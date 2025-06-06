@@ -10,7 +10,7 @@ import axios from 'axios';
 function App() {
   const [dataTransfer, setData] = useState([{}]);
   const [shoppingCart, setShoppingCart] = useState([]);
-  const [orderHistory, setOrderHistory] = useState([]); // ✅ Order history state
+  const [orderHistory, setOrderHistory] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:5000/")
@@ -27,7 +27,7 @@ function App() {
         <nav style={{ marginBottom: '20px' }}>
           <Link to="/" style={{ marginRight: '10px' }}>Catalog</Link>
           <Link to="/cart" style={{ marginRight: '10px' }}>My Cart</Link>
-          <Link to="/orders" style={{ marginRight: '10px' }}>Order History</Link> {/* ✅ added */}
+          <Link to="/orders" style={{ marginRight: '10px' }}>Order History</Link>
           <Link to="/history" style={{ marginRight: '10px' }}>Order History</Link>
           <Link to="/login" style={{ marginRight: '10px' }}>Login</Link>
           <Link to="/register">Register</Link>
@@ -43,7 +43,7 @@ function App() {
               setOrderHistory={setOrderHistory}
             />
           } />
-          <Route path="/orders" element={<OrderHistory orderHistory={orderHistory} />} /> {/* ✅ added */}
+          <Route path="/orders" element={<OrderHistory orderHistory={orderHistory} />} />
           <Route path="/history" element={<OrderHistory />} />
           <Route path="/login" element={<Login data={dataTransfer} />} />
           <Route path="/register" element={<Register data={dataTransfer} />} />

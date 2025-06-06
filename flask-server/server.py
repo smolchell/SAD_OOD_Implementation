@@ -65,9 +65,9 @@ def products():
 @app.route("/orders", methods=["POST"])
 def place_order():
     order = request.get_json()
-    orders.append(data)
+    orders.append(order)
     return jsonify({"message": "Order received", "orderId": len(orders)}), 201
-
+    
 
 @app.route("/orders", methods=["GET"])
 def get_orders():
