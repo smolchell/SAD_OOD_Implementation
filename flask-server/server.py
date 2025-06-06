@@ -91,113 +91,113 @@ def home():
 
 @app.route("/products", methods=["GET"])
 def products():
-json_format = jsonify({"message": 'login to view products'})
-
-if 'loggedin' in  session:
-    dbconn = cnntDB()
-    cursor = dbconn.cursor()
-    cursor.execute('SELECT * FROM inventory')
+    json_format = jsonify({"message": 'login to view products'})
     
-    columns = [column[0] for column in cursor.description]
-    data = [dict(zip(columns, row)) for row in cursor.fetchall()]
-    json_format = json.dumps(data, indent=4)
-    cursor.close()
-return json_format
+    if 'loggedin' in  session:
+        dbconn = cnntDB()
+        cursor = dbconn.cursor()
+        cursor.execute('SELECT * FROM inventory')
+        
+        columns = [column[0] for column in cursor.description]
+        data = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        json_format = json.dumps(data, indent=4)
+        cursor.close()
+    return json_format
 
 @app.route("/order", methods=["GET", "POST"])
 def order():
-msg = ''
-
-if 'loggedin' in  session:
-    if 'customer' in  session['access']:
-        dbconn = cnntDB()
-        cursor = dbconn.cursor()
-        customerID = session.get('id')
-        itemsOrdered = 
-        shipping =
-        paymentOpt =
-        total =
-        
-        if request.method == 'POST':
-            cursor.execute('INSERT INTO orders VALUES \
-            (NULL, %s, %s, %s, %s, %s)', (customerID, itemsOrdered, shipping, paymentOpt, total))
-            dbconn.commit()
-        else if request.method == 'GET':
-            cursor.execute('SELECT * FROM orders WHERE customerID = %s', customerID)
-            columns = [column[0] for column in cursor.description]
-            data = [dict(zip(columns, row)) for row in cursor.fetchall()]
-            json_format = json.dumps(data, indent=4)
-            return json_format
-        ##end if
-
-        cursor.close()
-return jsonify({"message": mssg})
+    msg = ''
+    
+    if 'loggedin' in  session:
+        if 'customer' in  session['access']:
+            dbconn = cnntDB()
+            cursor = dbconn.cursor()
+            customerID = session.get('id')
+            itemsOrdered = 
+            shipping =
+            paymentOpt =
+            total =
+            
+            if request.method == 'POST':
+                cursor.execute('INSERT INTO orders VALUES \
+                (NULL, %s, %s, %s, %s, %s)', (customerID, itemsOrdered, shipping, paymentOpt, total))
+                dbconn.commit()
+            else if request.method == 'GET':
+                cursor.execute('SELECT * FROM orders WHERE customerID = %s', customerID)
+                columns = [column[0] for column in cursor.description]
+                data = [dict(zip(columns, row)) for row in cursor.fetchall()]
+                json_format = json.dumps(data, indent=4)
+                return json_format
+            ##end if
+    
+            cursor.close()
+    return jsonify({"message": mssg})
 
 @app.route("/addProduct", methods=["POST"])
 def addProduct():
-msg = ''
-
-if 'loggedin' in  session:
-    if 'staff' in  session['access']:
-        dbconn = cnntDB()
-        cursor = dbconn.cursor()
-        name = 
-        price = 
-        description =
-        quantity =
-        imageURL =
-        
-        cursor.execute('INSERT INTO inventory \
-        (NULL, %s, %s, %s, %s, %s)', (name, price, description, quantity, imageURL))
-        dbconn.commit()
-        
-        mssg = f'new product {name} added'
-        cursor.close()
-return jsonify({"message": mssg})
+    msg = ''
+    
+    if 'loggedin' in  session:
+        if 'staff' in  session['access']:
+            dbconn = cnntDB()
+            cursor = dbconn.cursor()
+            name = 
+            price = 
+            description =
+            quantity =
+            imageURL =
+            
+            cursor.execute('INSERT INTO inventory \
+            (NULL, %s, %s, %s, %s, %s)', (name, price, description, quantity, imageURL))
+            dbconn.commit()
+            
+            mssg = f'new product {name} added'
+            cursor.close()
+    return jsonify({"message": mssg})
 
 @app.route("/updateProduct", methods=["POST"])
 def updateProduct():
-msg = ''
-
-if 'loggedin' in  session:
-    if 'staff' in  session['access']:
-        dbconn = cnntDB()
-        cursor = dbconn.cursor()
-        productID = 
-        name = 
-        price = 
-        description =
-        quantity =
-        imageURL =
-        
-        cursor.execute('UPDATE inventory \
-        SET name = %s, price = %s, description = %s, quantity = %s, imageURL = %s \
-        WHERE id = %d', (name, price, description, quantity, imageURL, productID))
-        dbconn.commit()
-        
-        mssg = f'update to product {productID} successful'
-        
-        cursor.close()
-return jsonify({"message": mssg})
+    msg = ''
+    
+    if 'loggedin' in  session:
+        if 'staff' in  session['access']:
+            dbconn = cnntDB()
+            cursor = dbconn.cursor()
+            productID = 
+            name = 
+            price = 
+            description =
+            quantity =
+            imageURL =
+            
+            cursor.execute('UPDATE inventory \
+            SET name = %s, price = %s, description = %s, quantity = %s, imageURL = %s \
+            WHERE id = %d', (name, price, description, quantity, imageURL, productID))
+            dbconn.commit()
+            
+            mssg = f'update to product {productID} successful'
+            
+            cursor.close()
+    return jsonify({"message": mssg})
 
 @app.route("/deleteProduct", methods=["POST"])
 def deleteProduct():
-msg = ''
-
-if 'loggedin' in  session:
-    if 'staff' in  session['access']:
-        dbconn = cnntDB()
-        cursor = dbconn.cursor()
-        productID = 
-        
-        cursor.execute('DELETE FROM inventory \
-        WHERE id = %d', productID)
-        dbconn.commit()
-        
-        mssg = f'deletion of product {productID} successful'
-        
-        cursor.close()
-return jsonify({"message": mssg})
+    msg = ''
+    
+    if 'loggedin' in  session:
+        if 'staff' in  session['access']:
+            dbconn = cnntDB()
+            cursor = dbconn.cursor()
+            productID = 
+            
+            cursor.execute('DELETE FROM inventory \
+            WHERE id = %d', productID)
+            dbconn.commit()
+            
+            mssg = f'deletion of product {productID} successful'
+            
+            cursor.close()
+    return jsonify({"message": mssg})
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
